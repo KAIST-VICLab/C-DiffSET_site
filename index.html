@@ -9,71 +9,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>C-DiffSET: Leveraging Latent Diffusion for SAR-to-EO Image Translation with Confidence-Guided Reliable Object
         Generation</title>
+
     <style>
-    @keyframes shake {
-      0% {transform: translateX(0);}
-      10%, 90% {transform: translateX(-5px);}
-      20%, 80% {transform: translateX(5px);}
-      30%, 50%, 70% {transform: translateX(-5px);}
-      40%, 60% {transform: translateX(5px);}
-      100% {transform: translateX(0);}
-    }
+        .twentytwenty-container {
+            width: 320px;
+            height: 320px;
+            margin: 0 15px;
+            display: inline-block;
+            overflow: hidden;
+            position: relative;
+        }
 
-    #blur {
-      /* font-size: 60px; */
-      color: rgb(52,144,197);
-      filter: blur(3x);
-      -webkit-filter: blur(2.5px);
-      animation: shake 1s infinite;
-      display: inline-block;;
-      clear: none;
-    }
-    #shake {
-      /* font-size: 60px; */
-      animation: shake 1s infinite;
-      display: inline-block;;
-      clear: none;
-    }
+        .results-carousel .twoitem {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
 
+        .cmpcontent img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M33D2LGZ');
-
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M33D2LGZ');
     </script>
     <!-- End Google Tag Manager -->
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
     <link rel="stylesheet" href="./static/css/bulma.min.css">
     <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
     <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
     <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/twentytwenty.css">
     <link rel="stylesheet" href="./static/css/index.css">
+
     <link rel="icon" sizes="256x256" href="./static/image/orange.png" type="image/png"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/jquery-3.2.1.min.js"></script>
+    <script src="./static/js/jquery.event.move.js"></script>
+    <script src="./static/js/jquery.twentytwenty.js"></script>
     <script src="./static/js/bulma-carousel.min.js"></script>
     <script src="./static/js/bulma-slider.min.js"></script>
-    <script src="./static/js/index.js"></script>
-    <script src="./static/js/video_comparison.js"></script>
+    <script src="./static/js/fontawesome.all.min.js"></script>
+
 </head>
 <body>
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </a>
-    </div>
-</nav>
 
 
 <section class="hero">
@@ -93,8 +82,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
                         <div class="title is-2 publication-title">
                         </div>
-
-
                     </div>
                     <div class="is-size-5 publication-authors" style="margin-bottom: 20px;">
             <span class="author-block">
@@ -168,23 +155,132 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </div>
 </section>
 
-<!-- Highlight. -->
-<section class="section">
-    <div class="container is-max-desktop">
-        <div class="columns is-centered has-text-centered">
-            <div class="column is-full">
-                <image src="./static/image/first.PNG"><br>
-                    <div class="content has-text-justified" style="margin-bottom: 40px;">
-                        <p>
-                            <b>Qualitative results of SAR-to-EO image translation using our proposed C-DiffSET
-                                framework.</b> Our proposed C-DiffSET achieve
-                            superior structural accuracy and visual fidelity compared to very recent methods.
-                        </p>
+
+<section class="hero is-light is-small mt-4">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel-horizontal" class="carousel results-carousel">
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0501_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0501_cdiffset.png">
+                        </div>
                     </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0501_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0501_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0039_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0039_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0039_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0039_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0461_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0461_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0461_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0461_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0535_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0535_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0535_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0535_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0074_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0074_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0074_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0074_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0565_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0565_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0565_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/results/0565_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>
 </section>
+
 
 <!-- Abstract. -->
 <section class="section">
@@ -271,7 +367,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     <div class="content has-text-justified" style="margin-bottom: 40px;">
                         <p>
                             <b>Quantitative comparison of image-to-image translation methods and SET methods on SAR2Opt
-                                and SpaceNet6 datasets.</b>
+                                and SpaceNet6 datasets.</b> Our C-DiffSET to attain the highest PSNR, SSIM, and SCC
+                            values, along with the lowest LPIPS and FID scores.
                         </p>
                     </div>
             </div>
@@ -289,9 +386,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </div>
             </div>
         </div>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/first.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Qualitative results of image-to-image translation methods and SET methods.</b> Our C-DiffSET achieve
+                            superior structural accuracy and visual fidelity compared to very recent methods.
+                        </p>
+                    </div>
+            </div>
+        </div>
     </div>
 </section>
-
 
 <!-- Confidence. -->
 <head>
@@ -320,6 +427,71 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </section>
 </body>
 
+<script>
+  $(window).on('load', function() {
+    bulmaCarousel.attach('#results-carousel-horizontal', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-vertical', {
+      slidesToScroll: 1,
+      slidesToShow: 5,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-testimonials', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+      breakpoints: [
+        {
+          changePoint: 50 + 260 * 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 3,
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 4,
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        }
+      ],
+    });
+
+    $(".twentytwenty-container-top").twentytwenty({
+      before_label: 'Input',
+      after_label: 'Ours',
+      default_offset_pct: 0.8,
+    });
+
+    $(".twentytwenty-container-bottom").twentytwenty({
+      before_label: 'cBBDM',
+      after_label: 'Ours',
+      default_offset_pct: 0.5,
+    });
+
+    $('.results-carousel').css({
+      'max-height': '2000px',
+      'visibility': 'visible'
+    });
+  });
+</script>
+
 
 <footer class="footer">
     <div class="container">
@@ -338,11 +510,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <div class="content">
                     <p>
                         We thank the authors of <a target="_blank" rel="noopener noreferrer"
-                                                   href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> that
-                        kindly open sourced the template of this website.
+                                                   href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and
+                        <a target="_blank" rel="noopener noreferrer"
+                           href="https://github.com/marigoldmonodepth/marigoldmonodepth.github.io/tree/main">Marigold</a>
+                        that
+                        kindly open sourced the template of this website. Website template licensed under
+                        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                            CC-BY-SA-4.0
+                        </a>.
                         Please visit our <a target="_blank" rel="noopener noreferrer"
                                             href="https://github.com/KAIST-VICLab">VIC-Lab</a> for more interesting
-                        researches
+                        researches.
                     </p>
                 </div>
             </div>
