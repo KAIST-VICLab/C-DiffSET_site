@@ -6,6 +6,6 @@
 
 https://kaist-viclab.github.io/C-DiffSET_site
 
-### Codes and Pretrained models
+### Codes
 
 https://github.com/KAIST-VICLab/C-DiffSET
