@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="SAR-to-EO Image Translation.">
+    <meta name="keywords"
+          content="SAR-to-EO Image Translation, Latent Diffusion Models">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>C-DiffSET: Leveraging Latent Diffusion for SAR-to-EO Image Translation with Confidence-Guided Reliable Object
+        Generation</title>
+    <style>
+    @keyframes shake {
+      0% {transform: translateX(0);}
+      10%, 90% {transform: translateX(-5px);}
+      20%, 80% {transform: translateX(5px);}
+      30%, 50%, 70% {transform: translateX(-5px);}
+      40%, 60% {transform: translateX(5px);}
+      100% {transform: translateX(0);}
+    }
+
+    #blur {
+      /* font-size: 60px; */
+      color: rgb(52,144,197);
+      filter: blur(3x);
+      -webkit-filter: blur(2.5px);
+      animation: shake 1s infinite;
+      display: inline-block;;
+      clear: none;
+    }
+    #shake {
+      /* font-size: 60px; */
+      animation: shake 1s infinite;
+      display: inline-block;;
+      clear: none;
+    }
+
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M33D2LGZ');
+
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="icon" sizes="256x256" href="./static/image/orange.png" type="image/png"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+    <script src="./static/js/video_comparison.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+</nav>
+
+
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <div class="title is-2 publication-title"><h1 style="display: inline; clear:none;"><img
+                            src="./static/image/orange.png" width="40" height="40"> <font
+                            color="#FFA500"><b>C</b></font><b>-</b><font color="#1E90FF"><b>Diff</b></font><font
+                            color="#32CD32"><b>SET</b></font>: Leveraging
+                        Latent <font color="#1E90FF"><b>Diff</b></font>usion<br>for <font
+                                color="#32CD32"><b>S</b></font>AR-to-<font color="#32CD32"><b>E</b></font>O Image <font
+                                color="#32CD32"><b>T</b></font>ranslation<br>with <font color="#FFA500"><b>C</b></font>onfidence-Guided
+                        Reliable Object Generation
+                    </h1>
+
+                        <div class="title is-2 publication-title">
+                        </div>
+
+
+                    </div>
+                    <div class="is-size-5 publication-authors" style="margin-bottom: 20px;">
+            <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer" href="https://sites.google.com/view/jeonghyeokdo/">Jeonghyeok Do</a><sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        </span>
+                        <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer"
+                 href="https://sites.google.com/view/knuairlab/">Jaehyup Lee</a><sup>†2</sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        </span>
+                        <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer"
+                 href="https://scholar.google.com/citations?hl=ko&user=bGXte_4AAAAJ">Munchurl Kim</a><sup>†1</sup>
+            </span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"> <sup>†</sup>Co-corresponding authors</span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>1</sup>Korea Advanced Institute of Science and Technology, South Korea</span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>2</sup>Kyungpook National University, South Korea</span>
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+                            <!-- PDF Link. -->
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://kaist-viclab.github.io/C-DiffSET_site"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://kaist-viclab.github.io/C-DiffSET_site"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+                            <!-- Video Link. -->
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://kaist-viclab.github.io/C-DiffSET_site"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+                            <!-- Code Link. -->
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/KAIST-VICLab/C-DiffSET"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</section>
+
+<!-- Highlight. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/first.png"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Qualitative results of SAR-to-EO image translation using our proposed C-DiffSET
+                                framework.</b> Our proposed C-DiffSET achieve
+                            superior structural accuracy and visual fidelity compared to very recent methods.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Abstract. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <h2 class="title is-3">Abstract</h2>
+                <div class="content has-text-justified" style="margin-bottom: 40px;">
+                    <p>
+                        We propose <b>Confidence Diffusion for SAR-to-EO Translation (C-DiffSET)</b>, the <em>first</em>
+                        framework to fine-tune a <em>pretrained</em> LDM for
+                        SAR-to-EO image translation (SET) tasks, effectively leveraging their learned representations to
+                        overcome the scarcity of
+                        SAR-EO pairs and local misalignment challenges.
+                    </p>
+                    <p>
+                        We introduce a novel <b>C-Diff loss</b> that can guide our C-DiffSET to reliably predict both EO
+                        outputs and confidence maps for accurate SET.
+                    </p>
+                    <p>
+                        We validate our C-DiffSET through extensive experiments on datasets with varying resolutions and
+                        ground sample distances (GSD), including QXS-SAROPT, SAR2Opt, and SpaceNet6 datasets,
+                        demonstrating the superiority of our
+                        C-DiffSET that <em>significantly</em> outperforms the very recent image-to-image translation
+                        methods and SET methods with large margins.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Motivation. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Motivation of C-DiffSET</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/merge.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Examples of misalignments in paired SAR-EO datasets. Local spatial
+                            misalignments caused by sensor differences or acquisition conditions. Temporal misalignments
+                            (discrepancies) where objects (e.g., ships) appear or disappear between SAR and EO images
+                            due to their different acquisition times.<br>
+                            <b>Right.</b> Results of applying the VAE encoder and decoder from LDM to EO and SAR images.
+                            The first row shows input images, including EO and SAR images with different levels of
+                            speckle noise. The second row presents the corresponding VAE reconstructions, illustrating
+                            that both EO and SAR images are accurately reconstructed despite noise variations.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Overview of C-DiffSET. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Overview of C-DiffSET</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/overall.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Training strategy for the diffusion process.<br>
+                            <b>Right.</b> Inference stage for EO image prediction.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance Evaluation. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Quantitative Evaluation</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/table1.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Quantitative comparison of image-to-image translation methods and SET methods on SAR2Opt
+                                and SpaceNet6 datasets.</b>
+                        </p>
+                    </div>
+            </div>
+        </div>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/table4.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Quantitative comparison of image-to-image translation methods and SET methods
+                            on the QXS-SAROPT dataset.<br>
+                            <b>Right.</b> Ablation study on the SAR2Opt dataset evaluating the impact of pretrained LDM
+                            and C-Diff loss.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Confidence. -->
+<head>
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+</head>
+<body>
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Analysis of Confidence Output</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/confidence.PNG" style="width: 60%; height: auto;"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Confidence maps generated on the training dataset.</b> Using this confidence map, C-Diff
+                            loss enables the U-Net \( \psi \) to down-weight uncertain regions where objects are
+                            temporally misaligned across modalities, thereby reducing artifacts and ensuring coherent EO
+                            outputs.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+
+
+<footer class="footer">
+    <div class="container">
+        <div class="content has-text-centered">
+            <a target="_blank" rel="noopener noreferrer" class="icon-link"
+               href="">
+                <i class="fas fa-file-pdf"></i>
+            </a>
+            <a target="_blank" rel="noopener noreferrer" class="icon-link" href="https://github.com/KAIST-VICLab"
+               class="external-link" disabled>
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="content">
+                    <p>
+                        We thank the authors of <a target="_blank" rel="noopener noreferrer"
+                                                   href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> that
+                        kindly open sourced the template of this website.
+                        Please visit our <a target="_blank" rel="noopener noreferrer"
+                                            href="https://github.com/KAIST-VICLab">VIC-Lab</a> for more interesting
+                        researches
+                    </p>
+                </div>
+            </div>
+            <a href="https://mapmyvisitors.com/web/1bwmv" title="Visit tracker"><img
+                    src="https://mapmyvisitors.com/map.png?d=DJ4AbzU_cK5trk4CYHZY9fn2NTXA2_R0Guj2lFqZzJY&cl=ffffff"/></a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
