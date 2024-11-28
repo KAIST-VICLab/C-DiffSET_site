@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="SAR-to-EO Image Translation.">
+    <meta name="keywords"
+          content="SAR-to-EO Image Translation, Latent Diffusion Models">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>C-DiffSET: Leveraging Latent Diffusion for SAR-to-EO Image Translation with Confidence-Guided Reliable Object
+        Generation</title>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M33D2LGZ');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="./static/css/twentytwenty.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+    <link rel="icon" sizes="256x256" href="./static/image/orange.png" type="image/png"/>
+
+    <script src="./static/js/jquery-3.2.1.min.js"></script>
+    <script src="./static/js/jquery.event.move.js"></script>
+    <script src="./static/js/jquery.twentytwenty.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/fontawesome.all.min.js"></script>
+
+</head>
+<body>
+
+
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column has-text-centered">
+                    <div class="title is-2 publication-title"><h1 style="display: inline; clear:none;"><img
+                            src="./static/image/orange.png" width="40" height="40"> <font
+                            color="#FFA500"><b>C</b></font><b>-</b><font color="#1E90FF"><b>Diff</b></font><font
+                            color="#32CD32"><b>SET</b></font>: Leveraging
+                        Latent <font color="#1E90FF"><b>Diff</b></font>usion<br>for <font
+                                color="#32CD32"><b>S</b></font>AR-to-<font color="#32CD32"><b>E</b></font>O Image <font
+                                color="#32CD32"><b>T</b></font>ranslation<br>with <font color="#FFA500"><b>C</b></font>onfidence-Guided
+                        Reliable Object Generation
+                    </h1>
+
+                        <div class="title is-2 publication-title">
+                        </div>
+                    </div>
+                    <div class="is-size-5 publication-authors" style="margin-bottom: 20px;">
+            <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer" href="https://sites.google.com/view/jeonghyeokdo/">Jeonghyeok Do</a><sup>1</sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        </span>
+                        <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer"
+                 href="https://sites.google.com/view/jaehyup-lee/">Jaehyup Lee</a><sup>†2</sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	        </span>
+                        <span class="author-block">
+              <a target="_blank" rel="noopener noreferrer"
+                 href="https://scholar.google.com/citations?hl=ko&user=bGXte_4AAAAJ">Munchurl Kim</a><sup>†1</sup>
+            </span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"> <sup>†</sup>Co-corresponding authors</span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>1</sup>Korea Advanced Institute of Science and Technology, South Korea</span>
+                    </div>
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>2</sup>Kyungpook National University, South Korea</span>
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+                            <!-- PDF Link. -->
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2411.10788"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://arxiv.org/abs/2411.10788"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+                            <!-- Code Link. -->
+                            <span class="link-block">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/KAIST-VICLab/C-DiffSET"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</section>
+
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <h2 class="title is-3">Qualitative Results (SpaceNet6 Dataset)</h2>
+        </div>
+    </div>
+</section>
+
+<section class="hero is-light is-small mt-4">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel-horizontal" class="carousel results-carousel">
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0003_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0003_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0003_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0003_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0013_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0013_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0013_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0013_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0029_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0029_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0029_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0029_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0035_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0035_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0035_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0035_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0039_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0039_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0039_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0039_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0041_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0041_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0041_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0041_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0501_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0501_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0501_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/spacenet6/0501_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <h2 class="title is-3">Qualitative Results (SAR2Opt Dataset)</h2>
+        </div>
+    </div>
+</section>
+
+<section class="hero is-light is-small mt-4">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel-horizontal" class="carousel results-carousel">
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0074_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0074_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0074_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0074_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0188_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0188_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0188_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0188_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0486_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0486_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0486_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0486_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0565_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0565_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0565_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/sar2opt/0565_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <h2 class="title is-3">Qualitative Results (QXS-SAROPT Dataset)</h2>
+        </div>
+    </div>
+</section>
+
+<section class="hero is-light is-small mt-4">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel-horizontal" class="carousel results-carousel">
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0005_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0005_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0005_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0005_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0006_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0006_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0006_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0006_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0014_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0014_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0014_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0014_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0042_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0042_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0042_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0042_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0048_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0048_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0048_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0048_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0440_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0440_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0440_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0440_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0449_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0449_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0449_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0449_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0461_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0461_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0461_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0461_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0474_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0474_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0474_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0474_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twoitem">
+                    <div class="twentytwenty-container twentytwenty-container-top">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0535_sar.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0535_cdiffset.png">
+                        </div>
+                    </div>
+                    <div class="twentytwenty-container twentytwenty-container-bottom">
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0535_cbbdm.png">
+                        </div>
+                        <div class="cmpcontent">
+                            <img src="./static/image/qxs/0535_cdiffset.png">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Abstract. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <h2 class="title is-3">Abstract</h2>
+                <div class="content has-text-justified" style="margin-bottom: 40px;">
+                    <p>
+                        We propose <b>Confidence Diffusion for SAR-to-EO Translation (C-DiffSET)</b>, the <em>first</em>
+                        framework to fine-tune a <em>pretrained</em> LDM for
+                        SAR-to-EO image translation (SET) tasks, effectively leveraging their learned representations to
+                        overcome the scarcity of
+                        SAR-EO pairs and local misalignment challenges.
+                    </p>
+                    <p>
+                        We introduce a novel <b>C-Diff loss</b> that can guide our C-DiffSET to reliably predict both EO
+                        outputs and confidence maps for accurate SET.
+                    </p>
+                    <p>
+                        We validate our C-DiffSET through extensive experiments on datasets with varying resolutions and
+                        ground sample distances (GSD), including QXS-SAROPT, SAR2Opt, and SpaceNet6 datasets,
+                        demonstrating the superiority of our
+                        C-DiffSET that <em>significantly</em> outperforms the very recent image-to-image translation
+                        methods and SET methods with large margins.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Motivation. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Motivation of C-DiffSET</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/merge.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Examples of misalignments in paired SAR-EO datasets. Local spatial
+                            misalignments caused by sensor differences or acquisition conditions. Temporal misalignments
+                            (discrepancies) where objects (e.g., ships) appear or disappear between SAR and EO images
+                            due to their different acquisition times.<br>
+                            <b>Right.</b> Results of applying the VAE encoder and decoder from LDM to EO and SAR images.
+                            The first row shows input images, including EO and SAR images with different levels of
+                            speckle noise. The second row presents the corresponding VAE reconstructions, illustrating
+                            that both EO and SAR images are accurately reconstructed despite noise variations.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Overview of C-DiffSET. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Overview of C-DiffSET</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/overall.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Training strategy for the diffusion process.<br>
+                            <b>Right.</b> Inference stage for EO image prediction.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance Evaluation. -->
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Quantitative Evaluation</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/table1.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Quantitative comparison of image-to-image translation methods and SET methods on SAR2Opt
+                                and SpaceNet6 datasets.</b> Our C-DiffSET to attain the highest PSNR, SSIM, and SCC
+                            values, along with the lowest LPIPS and FID scores.
+                        </p>
+                    </div>
+            </div>
+        </div>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/table4.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Left.</b> Quantitative comparison of image-to-image translation methods and SET methods
+                            on the QXS-SAROPT dataset.<br>
+                            <b>Right.</b> Ablation study on the SAR2Opt dataset evaluating the impact of pretrained LDM
+                            and C-Diff loss.
+                        </p>
+                    </div>
+            </div>
+        </div>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/first.PNG"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Qualitative results of image-to-image translation methods and SET methods.</b> Our C-DiffSET achieve
+                            superior structural accuracy and visual fidelity compared to very recent methods.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Confidence. -->
+<head>
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+</head>
+<body>
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title is-3">Analysis of Confidence Output</h2>
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-full">
+                <image src="./static/image/confidence.PNG" style="width: 60%; height: auto;"><br>
+                    <div class="content has-text-justified" style="margin-bottom: 40px;">
+                        <p>
+                            <b>Confidence maps generated on the training dataset.</b> Using this confidence map, C-Diff
+                            loss enables the U-Net \( \psi \) to down-weight uncertain regions where objects are
+                            temporally misaligned across modalities, thereby reducing artifacts and ensuring coherent EO
+                            outputs.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+
+<script>
+  $(window).on('load', function() {
+    bulmaCarousel.attach('#results-carousel-horizontal', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-vertical', {
+      slidesToScroll: 1,
+      slidesToShow: 5,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-testimonials', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+      breakpoints: [
+        {
+          changePoint: 50 + 260 * 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 3,
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 4,
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        }
+      ],
+    });
+
+    $(".twentytwenty-container-top").twentytwenty({
+      before_label: 'Input',
+      after_label: 'Ours',
+      default_offset_pct: 0.75,
+    });
+
+    $(".twentytwenty-container-bottom").twentytwenty({
+      before_label: 'cBBDM',
+      after_label: 'Ours',
+      default_offset_pct: 0.5,
+    });
+
+    $('.results-carousel').css({
+      'max-height': '2000px',
+      'visibility': 'visible'
+    });
+  });
+</script>
+
+
+<footer class="footer">
+    <div class="container">
+        <div class="content has-text-centered">
+            <a target="_blank" rel="noopener noreferrer" class="icon-link"
+               href="https://arxiv.org/abs/2411.10788">
+                <i class="fas fa-file-pdf"></i>
+            </a>
+            <a target="_blank" rel="noopener noreferrer" class="icon-link" href="https://github.com/KAIST-VICLab"
+               class="external-link" disabled>
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="content">
+                    <p>
+                        We thank the authors of <a target="_blank" rel="noopener noreferrer"
+                                                   href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and
+                        <a target="_blank" rel="noopener noreferrer"
+                           href="https://github.com/marigoldmonodepth/marigoldmonodepth.github.io/tree/main">Marigold</a>
+                        that
+                        kindly open sourced the template of this website. Website template licensed under
+                        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                            CC-BY-SA-4.0
+                        </a>.
+                        Please visit our <a target="_blank" rel="noopener noreferrer"
+                                            href="https://github.com/KAIST-VICLab">VIC-Lab</a> for more interesting
+                        researches.
+                    </p>
+                </div>
+            </div>
+            <a href="https://mapmyvisitors.com/web/1bwmv" title="Visit tracker"><img
+                    src="https://mapmyvisitors.com/map.png?d=DJ4AbzU_cK5trk4CYHZY9fn2NTXA2_R0Guj2lFqZzJY&cl=ffffff"/></a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
